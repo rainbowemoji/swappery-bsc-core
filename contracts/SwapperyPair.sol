@@ -30,9 +30,10 @@ contract SwapperyPair is ISwapperyPair, SwapperyERC20 {
 
   uint256 private unlocked = 1;
 
-  address public AMM; // Automated Market Maker
-  uint256 public ALT; // ADD LIQUIDITY TIME
-  uint256 public LockDays = 30; // Days for Lock
+  // The-Swappery Customization >>>>
+  uint256 public initLiquidityTime; // First time to add liquidity
+  uint256 public lockDays = 30; // Days to refuse remove liquidity
+  // The-Swappery Customization <<<<
   modifier lock() {
     require(unlocked == 1, "Swappery: LOCKED");
     unlocked = 0;
@@ -159,8 +160,9 @@ contract SwapperyPair is ISwapperyPair, SwapperyERC20 {
     bool feeOn = _mintFee(_reserve0, _reserve1);
     uint256 _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee
     if (_totalSupply == 0) {
-      AMM = to; // Customized for swappery
-      ALT = block.timestamp; // Customized for swappery
+      // The-Swappery Customization >>>>
+      initLiquidityTime = block.timestamp;
+      // The-Swappery Customization <<<<
 
       liquidity = Math.sqrt(amount0.mul(amount1)).sub(MINIMUM_LIQUIDITY);
       _mint(address(0), MINIMUM_LIQUIDITY); // permanently lock the first MINIMUM_LIQUIDITY tokens
@@ -184,11 +186,12 @@ contract SwapperyPair is ISwapperyPair, SwapperyERC20 {
     lock
     returns (uint256 amount0, uint256 amount1)
   {
-    if (sender == AMM)
-      require(
-        (block.timestamp - ALT) > LockDays * 1 days,
-        "Swappery: Locked Liquidity"
-      );
+    // The-Swappery Customization >>>>
+    require(
+      (block.timestamp - initLiquidityTime) > lockDays * 1 days,
+      "Swappery: Locked Liquidity"
+    );
+    // The-Swappery Customization <<<<
 
     (uint112 _reserve0, uint112 _reserve1, ) = getReserves(); // gas savings
     address _token0 = token0; // gas savings
@@ -301,9 +304,5 @@ contract SwapperyPair is ISwapperyPair, SwapperyERC20 {
       reserve0,
       reserve1
     );
-  }
-
-  function setLockDays(uint256 _days) external lock {
-    LockDays = _days;
   }
 }
