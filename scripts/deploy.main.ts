@@ -7,7 +7,7 @@ async function main() {
 
   const factory = await ethers.getContractFactory("SwapperyFactory");
   const swapperyFactory = await factory.deploy(
-    "0x3ED3E34bA3aC2079CE434D7D03D2BfDC048dec32"
+    "0x3ED3E34bA3aC2079CE434D7D03D2BfDC048dec32"  // _feeToSetter
   );
 
   await swapperyFactory.deployed();
