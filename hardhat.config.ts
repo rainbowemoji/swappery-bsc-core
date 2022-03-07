@@ -35,31 +35,33 @@ const config: HardhatUserConfig = {
      }
     },
   networks: {
-    kovan: {
-      url: process.env.KOVAN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
     bsctest: {
       url: process.env.BSCTEST_URL || "",
       chainId: 97,
-      gasPrice: 20000000000,
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
         timeout: 100000
-    }
+    },
+    bsc: {
+      url: process.env.BSCMAIN_URL || "",
+      chainId: 56,
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        timeout: 100000
+    },
+    hardhat: {
+      forking: {
+        enabled: true,
+        url: process.env.BSCTEST_URL || "",
+      },
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
   },
   etherscan: {
-    apiKey: process.env.BSCSCAM_API_KEY,
+    apiKey: process.env.BSCSCAN_API || ""
   },
 };
 

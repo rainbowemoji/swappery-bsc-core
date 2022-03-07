@@ -103,6 +103,4 @@ interface ISwapperyPair {
   function sync() external;
 
   function initialize(address, address) external;
-
-  function setLockDays(uint256 _days) external;
 }
